@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @RestController
 public class SpringAssignment1Application {
     private List<Course> courses = new CopyOnWriteArrayList<>();
-    Course course = new Course();
+Course course = new Course();
     public static void main(String[] args) {
         SpringApplication.run(SpringAssignment1Application.class, args);
     }
@@ -54,21 +54,18 @@ public class SpringAssignment1Application {
 
     @PutMapping("/courses/{id}")
     public Course updateCourse(@PathVariable int id, @RequestBody Course updatedCourse) {
-        courses = courses.stream()
-                .map(course -> {
-                    if (course.getId() == id) {
-                        course.setName(updatedCourse.getName());
-                        course.setCode(updatedCourse.getCode());
-                    }
-                    return course;
-                })
-                .collect(Collectors.toList());
-        return updatedCourse;
+        for (Course course : courses) {
+            if (course.getId() == id) {
+                course.setName(updatedCourse.getName());
+                course.setCode(updatedCourse.getCode());
+                return course;
+            }
+        }
+        return null;
     }
 
     @DeleteMapping("/courses/{id}")
     public void deleteCourse(@PathVariable int id) {
         courses.removeIf(course -> course.getId() == id);
     }
-
 }

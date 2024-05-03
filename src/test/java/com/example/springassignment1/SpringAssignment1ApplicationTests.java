@@ -10,39 +10,4 @@ class SpringAssignment1ApplicationTests {
     void contextLoads() {
     }
 
-    @Test
-    void main() {
-    }
-
-    @Test
-    void getFoundationCourses() {
-    }
-
-    @Test
-    void getUndergraduateCourses() {
-    }
-
-    @Test
-    void getHonoursCourses() {
-    }
-
-    @Test
-    void createCourse() {
-    }
-
-    @Test
-    void getAllCourses() {
-    }
-
-    @Test
-    void getCourseById() {
-    }
-
-    @Test
-    void updateCourse() {
-    }
-
-    @Test
-    void deleteCourse() {
-    }
 }

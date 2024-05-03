@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University of Fort Hare</title>
+</head>
+<body>
+<h1>UFH Admin</h1>
+
+<h2>Create Course</h2>
+<form id="createCourseForm">
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" required><br><br>
+    <label for="code">Code:</label>
+    <input type="text" id="code" name="code" required><br><br>
+    <button type="submit">Create Course</button>
+</form>
+
+<h2>Update Course</h2>
+<form id="updateCourseForm">
+    <label for="updateId">Course ID:</label>
+    <input type="number" id="updateId" name="updateId" required><br><br>
+    <label for="updateName">Name:</label>
+    <input type="text" id="updateName" name="updateName" required><br><br>
+    <label for="updateCode">Code:</label>
+    <input type="text" id="updateCode" name="updateCode" required><br><br>
+    <button type="submit">Update Course</button>
+</form>
+
+<h2>Delete Course</h2>
+<form id="deleteCourseForm">
+    <label for="deleteId">Course ID:</label>
+    <input type="number" id="deleteId" name="deleteId" required><br><br>
+    <button type="submit">Delete Course</button>
+</form>
+
+<h2>All Courses</h2>
+<ul id="allCourses"></ul>
+
+<script>
+
+    function fetchAllCourses() {
+        fetch('/courses')
+            .then(response => response.json())
+            .then(data => {
+                const allCourses = document.getElementById('allCourses');
+                allCourses.innerHTML = '';
+                data.forEach(course => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = `${course.name} (${course.code})`;
+                    allCourses.appendChild(listItem);
+                });
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+
+    document.getElementById('createCourseForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const formData = new FormData(this);
+        const courseData = {
+            name: formData.get('name'),
+            code: formData.get('code')
+        };
+
+        fetch('/courses', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(courseData)
+        })
+            .then(response => response.json())
+            .then(data => {
+                fetchAllCourses(); // Fetch all courses again to update the list
+                document.getElementById('createCourseForm').reset();
+            })
+            .catch(error => console.error('Error:', error));
+    });
+
+
+    document.getElementById('updateCourseForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const updateId = document.getElementById('updateId').value;
+        const updateName = document.getElementById('updateName').value;
+        const updateCode = document.getElementById('updateCode').value;
+        const courseData = {
+            name: updateName,
+            code: updateCode
+        };
+
+        fetch(`/courses/${updateId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(courseData)
+        })
+            .then(response => response.json())
+            .then(data => {
+                fetchAllCourses(); // Fetch all courses again to update the list
+                document.getElementById('updateCourseForm').reset();
+            })
+            .catch(error => console.error('Error:', error));
+    });
+
+
+    document.getElementById('deleteCourseForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const deleteId = document.getElementById('deleteId').value;
+
+        fetch(`/courses/${deleteId}`, {
+            method: 'DELETE'
+        })
+            .then(() => {
+                fetchAllCourses();
+                document.getElementById('deleteCourseForm').reset();
+            })
+            .catch(error => console.error('Error:', error));
+    });
+
+
+    fetchAllCourses();
+</script>
+</body>
+</html>
